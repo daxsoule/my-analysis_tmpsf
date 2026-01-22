@@ -1,11 +1,11 @@
-# [PROJECT_NAME] Research Constitution
+# Diffuse Hydrothermal Temperature Timeseries Analysis
 
 ## Research Context
 
-[RESEARCH_CONTEXT]
-<!-- What scientific questions does this project address? How does it fit
-     into the broader research program? Who are the intended users of
-     the outputs? -->
+This project analyzes diffuse hydrothermal vent temperature variability using TMPSF (Temperature Mooring Sea Floor) sensor data from 2016 to present. The primary goal is to understand how diffuse temperature varies as a function of time across the full observational record.
+
+The initial output is a concatenated timeseries plot showing the complete temperature record.
+<!-- Who are the intended users of the outputs? -->
 
 ## Core Principles
 
