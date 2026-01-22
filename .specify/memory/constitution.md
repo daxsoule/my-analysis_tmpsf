@@ -4,7 +4,9 @@
 
 This project analyzes diffuse hydrothermal vent temperature variability using TMPSF (Temperature Mooring Sea Floor) sensor data from 2016 to present. The primary goal is to understand how diffuse temperature varies as a function of time across the full observational record.
 
-The initial output is a concatenated timeseries plot showing the complete temperature record.
+Outputs:
+1. A concatenated pandas DataFrame containing the full timeseries for exploration
+2. An interactive timeseries plot showing the complete temperature record
 <!-- Who are the intended users of the outputs? -->
 
 ## Core Principles
@@ -31,51 +33,55 @@ belong in the paper.
 
 ## Data Sources
 
-[DATA_SOURCES]
-<!-- For each major data source:
-     - Name and brief description
-     - Access method (URL, API, local path)
-     - Spatial/temporal coverage
-     - Update frequency (if applicable)
-     - Known quality issues or limitations
-     - Contact or documentation link -->
+### TMPSF Sensor Data
+- **Source**: Ocean Observatories Initiative (OOI)
+- **Site**: ASHES vent field, Axial Seamount
+- **Reference designator**: RS03ASHS-MJ03B-07-TMPSFA301-streamed-tmpsf_sample
+- **Access method**: Local files at `/home/jovyan/ooi/kdata/RS03ASHS-MJ03B-07-TMPSFA301-streamed-tmpsf_sample/`
+- **Temporal coverage**: 2016 to present
+- **Instrument**: TMPSF (Temperature Mooring Sea Floor)
+- **Documentation**: https://oceanobservatories.org/
+
+- **File format**: NetCDF (.nc), 253 files across 2 deployments
+- **File pattern**: `deployment{NNNN}_RS03ASHS-MJ03B-07-TMPSFA301-streamed-tmpsf_sample_{starttime}-{endtime}.nc`
+- **Actual temporal range**: 2014-09-29 to 2026-01-22 (present)
+
+- **Variables**: temperature01-24 (24 thermistor channels), with QARTOD and QC flags
+- **Location**: 45.933653°N, 130.013688°W (Axial Seamount)
+- **Coordinate**: time (datetime64[ns])
+
+<!-- TODO: Known quality issues or data gaps -->
 
 ## Technical Environment
 
-[TECHNICAL_ENVIRONMENT]
-<!-- - Language and version (e.g., Python 3.11)
-     - Key packages and versions
-     - Compute environment (laptop, cluster, cloud)
-     - Data storage locations
-     - Version control practices -->
+- **Language**: Python 3.12
+- **Package manager**: uv (use `uv add` for dependencies)
+- **Key packages**: xarray, netCDF4, hvplot, pandas, numpy, matplotlib, scipy
+- **Compute environment**: JupyterHub server
+- **Data storage (raw)**: `/home/jovyan/ooi/kdata/`
+- **Data storage (processed)**: `my_data/axial/axial_tmpsf/`
+- **Version control**: Git
 
 ## Coordinate Systems & Units
 
-[COORDINATE_SYSTEMS]
-<!-- - Spatial reference system(s) with EPSG codes
-     - Time zone and calendar conventions
-     - Standard units for key variables
-     - Missing data conventions (NaN, -9999, etc.) -->
+- **Time zone**: UTC (OOI standard)
+- **Calendar**: Gregorian
+- **Temperature units**: °C
+- **Missing data**: NaN
 
 ## Figure Standards
 
-[FIGURE_STANDARDS]
-<!-- - Color palette (prefer colorblind-safe)
-     - Standard dimensions for publication
-     - Required elements (scale bars, colorbars, uncertainty)
-     - File formats and resolution (e.g., PDF for vectors, 300dpi PNG) -->
+- **Purpose**: Exploratory analysis
+- **Plotting library**: hvplot (interactive)
+- **Color palette**: Default (colorblind-safe preferred for publication)
+- **Format**: Interactive HTML/notebook widgets
 
 ## Quality Checks
 
-[QUALITY_CHECKS]
-<!-- - Range and sanity checks for key variables
-     - Spatial/temporal consistency checks
-     - Comparison against reference or validation data
-     - How suspect data is flagged and handled -->
+- **Primary QC**: Use OOI QARTOD and QC flags included in data files
+- **Handling**: Filter or flag data based on QC results before plotting
 
 ## Project Notes
 
-[PROJECT_NOTES]
-<!-- - Collaborator agreements or data sharing restrictions
-     - Publication timelines or embargo periods
-     - Any other project-specific constraints -->
+- **Status**: Exploratory analysis, no constraints
+- **Data sharing**: OOI data is publicly available
