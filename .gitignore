@@ -1,0 +1,87 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# Data directories (raw data should be fetched, not committed)
+data/raw/
+data/processed/
+data/interim/
+*.csv
+*.nc
+*.netcdf
+*.hdf5
+*.h5
+*.parquet
+*.feather
+*.pkl
+*.pickle
+
+# Output directories
+output/
+outputs/
+results/
+figures/
+plots/
+
+# Logs
+*.log
+logs/
+
+# IDE and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.spyderproject
+.spyproject
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# mypy
+.mypy_cache/
+
+# Secrets and credentials
+*.env
+.envrc
+secrets.yaml
+credentials.json
