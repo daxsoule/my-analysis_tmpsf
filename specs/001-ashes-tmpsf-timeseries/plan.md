@@ -6,7 +6,7 @@
 
 ## Summary
 
-This analysis loads and concatenates 253 NetCDF files (~20GB) of TMPSF temperature data from the ASHES vent field to create a single pandas DataFrame for exploration and an interactive hvplot timeseries visualization. The focus is on data from 2016 to present, with QC flags used to identify suspect measurements.
+This analysis loads and concatenates NetCDF files of TMPSF temperature data from the ASHES vent field to create a single pandas DataFrame for exploration and an interactive hvplot timeseries visualization showing daily average temperature. The focus is on data from 2018, with QC flags used to identify suspect measurements.
 
 ## Analysis Environment
 
@@ -45,7 +45,7 @@ specs/001-ashes-tmpsf-timeseries/
 notebooks/
 └── 01_explore_tmpsf.ipynb    # Main exploration notebook
 
-my_data/axial/axial_tmpsf/
+/home/jovyan//home/jovyan/my_data/axial/axial_tmpsf/
 └── tmpsf_concatenated.parquet  # Concatenated DataFrame (optional cache)
 
 outputs/
@@ -62,7 +62,7 @@ outputs/
 - **Processing**:
   - Use `xarray.open_mfdataset()` with parallel loading
   - Select temperature variables and QC flags
-  - Filter to 2016-01-01 onward
+  - Filter to 2018 (2018-01-01 to 2018-12-31)
 - **Output**: xarray Dataset (in memory, lazy-loaded)
 - **Script**: `notebooks/01_explore_tmpsf.ipynb` (Cell 1-2)
 
@@ -75,20 +75,20 @@ outputs/
 - **Output**: QC-annotated Dataset
 - **Script**: `notebooks/01_explore_tmpsf.ipynb` (Cell 3)
 
-### Stage 3: DataFrame Conversion
+### Stage 3: DataFrame Conversion & Daily Averaging
 - **Input**: QC-annotated Dataset
 - **Processing**:
   - Convert to pandas DataFrame
-  - Optionally resample/downsample for memory efficiency
-  - Optionally save as parquet to `my_data/axial/axial_tmpsf/` for faster reload
-- **Output**: pandas DataFrame ready for exploration
+  - Compute daily average temperature
+  - Optionally save as parquet to `/home/jovyan/my_data/axial/axial_tmpsf/` for faster reload
+- **Output**: pandas DataFrame with daily averages ready for exploration
 - **Script**: `notebooks/01_explore_tmpsf.ipynb` (Cell 4)
 
 ### Stage 4: Visualization
-- **Input**: pandas DataFrame
+- **Input**: pandas DataFrame with daily averages
 - **Processing**:
   - Create interactive timeseries with hvplot
-  - Plot temperature vs time for selected channel(s)
+  - Plot daily average temperature vs time for 2018
 - **Output**: Interactive hvplot figure
 - **Script**: `notebooks/01_explore_tmpsf.ipynb` (Cell 5)
 
@@ -96,15 +96,15 @@ outputs/
 
 | Artifact | Purpose | Inputs | Outputs |
 |----------|---------|--------|---------|
-| `notebooks/01_explore_tmpsf.ipynb` | Load, concatenate, QC, explore TMPSF data | 253 NetCDF files | DataFrame + hvplot figure |
+| `notebooks/01_explore_tmpsf.ipynb` | Load, concatenate, QC, compute daily averages, explore TMPSF data | NetCDF files (2018) | DataFrame with daily averages + hvplot figure |
 
 ### Notebook Cell Structure
 
 1. **Setup**: Import packages, define paths
-2. **Load Data**: `xr.open_mfdataset()` with time filter
+2. **Load Data**: `xr.open_mfdataset()` with 2018 time filter
 3. **QC Assessment**: Examine and apply QARTOD flags
-4. **DataFrame Creation**: Convert to pandas, inspect structure
-5. **Visualization**: Interactive hvplot timeseries
+4. **DataFrame Creation**: Convert to pandas, compute daily averages
+5. **Visualization**: Interactive hvplot of daily average temperature
 6. **Exploration**: Additional cells for ad-hoc investigation
 
 ## Dependencies
@@ -112,11 +112,13 @@ outputs/
 ```text
 Load NetCDF files
        ↓
-Apply time filter (2016+)
+Apply time filter (2018)
        ↓
 Assess QC flags
        ↓
 Convert to DataFrame
+       ↓
+Compute daily averages
        ↓
 Generate hvplot
 ```
@@ -132,4 +134,4 @@ Generate hvplot
 
 - Data is already local, no download step needed
 - 24 temperature channels available - may want to explore spatial arrangement in future work
-- Consider saving concatenated DataFrame as parquet to `my_data/axial/axial_tmpsf/` if reload is needed frequently
+- Consider saving concatenated DataFrame as parquet to `/home/jovyan/my_data/axial/axial_tmpsf/` if reload is needed frequently
