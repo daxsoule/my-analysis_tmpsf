@@ -6,7 +6,7 @@
 
 ## Research Question(s)
 
-1. How does diffuse hydrothermal vent temperature vary as a function of time for the year 2018 at the ASHES vent field?
+1. How does diffuse hydrothermal vent temperature vary as a function of time for the years 2018-2019 at the ASHES vent field?
 
 ## Data Description
 
@@ -15,7 +15,7 @@
 - **Source**: Ocean Observatories Initiative (OOI) TMPSF sensor
 - **Site**: ASHES vent field, Axial Seamount (45.933653°N, 130.013688°W)
 - **Reference designator**: RS03ASHS-MJ03B-07-TMPSFA301-streamed-tmpsf_sample
-- **Coverage**: 2014-09-29 to 2026-01-22 (analysis focus: 2018)
+- **Coverage**: 2014-09-29 to 2026-01-22 (analysis focus: 2018-2019)
 - **Format**: NetCDF (.nc), 253 files across 2 deployments
 - **Access**: Local files at `/home/jovyan/ooi/kdata/RS03ASHS-MJ03B-07-TMPSFA301-streamed-tmpsf_sample/`
 - **Variables**: temperature01-24 (24 thermistor channels), with QARTOD and QC flags
@@ -26,14 +26,14 @@
 1. **Data preparation**:
    - Load all NetCDF files from the data directory
    - Concatenate into a single xarray Dataset
-   - Filter to 2018 timeframe
+   - Filter to 2018-2019 timeframe
    - Apply QC flags to identify suspect data
    - Convert to pandas DataFrame for exploration
 
 2. **Analysis approach**:
-   - Compute daily average temperature
-   - Exploratory visualization of the 2018 temperature timeseries
-   - Interactive plotting to examine temporal patterns and anomalies
+   - Compute daily average temperature for all 24 channels
+   - Exploratory visualization of the 2018-2019 temperature timeseries
+   - Interactive plotting of all 24 channels to examine temporal patterns and anomalies
 
 3. **Validation**:
    - Check that temperature values fall within reasonable range for diffuse vents
@@ -46,11 +46,11 @@
 
 ### Data Products
 
-- **Concatenated DataFrame**: Pandas DataFrame containing the 2018 timeseries (time, temperature channels, QC flags) for interactive exploration
+- **Concatenated DataFrame**: Pandas DataFrame containing the 2018-2019 timeseries (time, temperature channels, QC flags) for interactive exploration
 
 ### Figures
 
-- **Figure 1**: Interactive hvplot timeseries showing daily average temperature vs. time for 2018
+- **Figure 1**: Interactive hvplot timeseries showing all 24 temperature channels vs. time for 2018-2019
 
 ## Validation Approach
 
@@ -61,12 +61,12 @@
 
 ## Completion Criteria
 
-- [ ] All 253 NetCDF files loaded and concatenated
-- [ ] Data filtered to 2018 timeframe
+- [ ] NetCDF files loaded and concatenated
+- [ ] Data filtered to 2018-2019 timeframe
 - [ ] QC flags applied to identify suspect data
 - [ ] Concatenated DataFrame available for exploration
-- [ ] Daily average temperature computed
-- [ ] Interactive timeseries plot of daily averages generated
+- [ ] Daily average temperature computed for all 24 channels
+- [ ] Interactive timeseries plot showing all 24 channels generated
 - [ ] Results reproducible from raw data
 
 ## Assumptions & Limitations
@@ -83,6 +83,6 @@
 
 ## Notes
 
-- Data actually extends back to 2014-09-29, but analysis focus is 2018 per user specification
+- Data actually extends back to 2014-09-29, but analysis focus is 2018-2019 per user specification
 - 24 thermistor channels may represent different probe locations - spatial arrangement TBD
 - Future work may expand to other TMPSF instruments at Axial Seamount

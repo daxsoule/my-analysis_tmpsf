@@ -30,15 +30,15 @@
 
 ## Phase 2: Data Loading
 
-**Purpose**: NetCDF files loaded and filtered to 2018
+**Purpose**: NetCDF files loaded and filtered to 2018-2019
 
-- [ ] T004 Implement data loading cell: `xr.open_mfdataset()` for all 253 NetCDF files
+- [ ] T004 Implement data loading: load files individually to avoid memory issues
 - [ ] T005 Select temperature variables (temperature01-24) and QC flag variables
-- [ ] T006 Filter to 2018 (2018-01-01 to 2018-12-31) using time coordinate
-- [ ] T007 QC: Verify loaded dataset has expected time range (2018)
+- [ ] T006 Filter to 2018-2019 (2018-01-01 to 2019-12-31) using time coordinate
+- [ ] T007 QC: Verify loaded dataset has expected time range (2018-2019)
 - [ ] T008 QC: Check that all 24 temperature channels are present
 
-**Checkpoint**: xarray Dataset loaded with 2018 data, all temperature channels available
+**Checkpoint**: DataFrame loaded with 2018-2019 data, all temperature channels available
 
 ---
 
@@ -58,29 +58,29 @@
 
 ## Phase 4: DataFrame Creation & Daily Averaging
 
-**Purpose**: Data converted to pandas DataFrame and daily averages computed
+**Purpose**: Data converted to pandas DataFrame and daily averages computed for all 24 channels
 
 - [ ] T014 Convert xarray Dataset to pandas DataFrame
 - [ ] T015 Inspect DataFrame structure (columns, dtypes, shape)
-- [ ] T016 Compute daily average temperature for each day in 2018
-- [ ] T017 QC: Verify daily averages DataFrame has 365 rows (or 366 if leap year)
-- [ ] T018 Optionally save DataFrame to `/home/jovyan/my_data/axial/axial_tmpsf/tmpsf_2018_daily.parquet`
+- [ ] T016 Compute daily average temperature for all 24 channels for 2018-2019
+- [ ] T017 QC: Verify daily averages DataFrame has 730 rows (365 + 365 days)
+- [ ] T018 Optionally save DataFrame to `/home/jovyan/my_data/axial/axial_tmpsf/tmpsf_2018-2019_daily.parquet`
 
-**Checkpoint**: pandas DataFrame with daily averages available for exploration
+**Checkpoint**: pandas DataFrame with daily averages for all 24 channels available for exploration
 
 ---
 
 ## Phase 5: Visualization
 
-**Purpose**: Interactive timeseries plot of daily averages generated
+**Purpose**: Interactive timeseries plot showing all 24 channels generated
 
-- [ ] T019 Create interactive hvplot timeseries for daily average temperature vs time
-- [ ] T020 Add plot title, axis labels, and appropriate styling
-- [ ] T021 Optionally save plot to `outputs/figures/tmpsf_2018_daily.html`
-- [ ] T022 QC: Verify plot displays full 2018 time range
-- [ ] T023 QC: Verify plot shows expected temperature variability patterns
+- [ ] T019 Create interactive hvplot timeseries showing all 24 temperature channels vs time
+- [ ] T020 Add plot title, axis labels, legend, and appropriate styling
+- [ ] T021 Optionally save plot to `outputs/figures/tmpsf_2018-2019_all_channels.html`
+- [ ] T022 QC: Verify plot displays full 2018-2019 time range
+- [ ] T023 QC: Verify plot shows expected temperature variability patterns across channels
 
-**Checkpoint**: Interactive hvplot figure of daily averages generated, displays correctly in notebook
+**Checkpoint**: Interactive hvplot figure showing all 24 channels generated, displays correctly in notebook
 
 ---
 
@@ -121,11 +121,11 @@ Phases are sequential. Complete each checkpoint before proceeding.
 From spec.md - all must be satisfied:
 
 - [ ] NetCDF files loaded and concatenated
-- [ ] Data filtered to 2018 timeframe
+- [ ] Data filtered to 2018-2019 timeframe
 - [ ] QC flags applied to identify suspect data
 - [ ] Concatenated DataFrame available for exploration
-- [ ] Daily average temperature computed
-- [ ] Interactive timeseries plot of daily averages generated
+- [ ] Daily average temperature computed for all 24 channels
+- [ ] Interactive timeseries plot showing all 24 channels generated
 - [ ] Results reproducible from raw data
 
 ---

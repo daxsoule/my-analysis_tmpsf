@@ -6,7 +6,7 @@
 
 ## Summary
 
-This analysis loads and concatenates NetCDF files of TMPSF temperature data from the ASHES vent field to create a single pandas DataFrame for exploration and an interactive hvplot timeseries visualization showing daily average temperature. The focus is on data from 2018, with QC flags used to identify suspect measurements.
+This analysis loads and concatenates NetCDF files of TMPSF temperature data from the ASHES vent field to create a single pandas DataFrame for exploration and an interactive hvplot timeseries visualization showing all 24 temperature channels. The focus is on data from 2018-2019, with QC flags used to identify suspect measurements.
 
 ## Analysis Environment
 
@@ -62,7 +62,7 @@ outputs/
 - **Processing**:
   - Use `xarray.open_mfdataset()` with parallel loading
   - Select temperature variables and QC flags
-  - Filter to 2018 (2018-01-01 to 2018-12-31)
+  - Filter to 2018-2019 (2018-01-01 to 2019-12-31)
 - **Output**: xarray Dataset (in memory, lazy-loaded)
 - **Script**: `notebooks/01_explore_tmpsf.ipynb` (Cell 1-2)
 
@@ -79,32 +79,32 @@ outputs/
 - **Input**: QC-annotated Dataset
 - **Processing**:
   - Convert to pandas DataFrame
-  - Compute daily average temperature
+  - Compute daily average temperature for all 24 channels
   - Optionally save as parquet to `/home/jovyan/my_data/axial/axial_tmpsf/` for faster reload
-- **Output**: pandas DataFrame with daily averages ready for exploration
+- **Output**: pandas DataFrame with daily averages for all channels ready for exploration
 - **Script**: `notebooks/01_explore_tmpsf.ipynb` (Cell 4)
 
 ### Stage 4: Visualization
-- **Input**: pandas DataFrame with daily averages
+- **Input**: pandas DataFrame with daily averages for all 24 channels
 - **Processing**:
   - Create interactive timeseries with hvplot
-  - Plot daily average temperature vs time for 2018
-- **Output**: Interactive hvplot figure
+  - Plot all 24 temperature channels vs time for 2018-2019
+- **Output**: Interactive hvplot figure showing all 24 channels
 - **Script**: `notebooks/01_explore_tmpsf.ipynb` (Cell 5)
 
 ## Script/Notebook Plan
 
 | Artifact | Purpose | Inputs | Outputs |
 |----------|---------|--------|---------|
-| `notebooks/01_explore_tmpsf.ipynb` | Load, concatenate, QC, compute daily averages, explore TMPSF data | NetCDF files (2018) | DataFrame with daily averages + hvplot figure |
+| `notebooks/01_explore_tmpsf.ipynb` | Load, concatenate, QC, compute daily averages, explore TMPSF data | NetCDF files (2018-2019) | DataFrame with daily averages for all 24 channels + hvplot figure |
 
 ### Notebook Cell Structure
 
 1. **Setup**: Import packages, define paths
-2. **Load Data**: `xr.open_mfdataset()` with 2018 time filter
+2. **Load Data**: Load files with 2018-2019 time filter
 3. **QC Assessment**: Examine and apply QARTOD flags
-4. **DataFrame Creation**: Convert to pandas, compute daily averages
-5. **Visualization**: Interactive hvplot of daily average temperature
+4. **DataFrame Creation**: Convert to pandas, compute daily averages for all 24 channels
+5. **Visualization**: Interactive hvplot showing all 24 temperature channels
 6. **Exploration**: Additional cells for ad-hoc investigation
 
 ## Dependencies
@@ -112,22 +112,22 @@ outputs/
 ```text
 Load NetCDF files
        ↓
-Apply time filter (2018)
+Apply time filter (2018-2019)
        ↓
 Assess QC flags
        ↓
 Convert to DataFrame
        ↓
-Compute daily averages
+Compute daily averages (all 24 channels)
        ↓
-Generate hvplot
+Generate hvplot (all 24 channels)
 ```
 
 **Parallel opportunities**: None needed - this is a linear exploratory workflow.
 
 ## Open Questions
 
-- [x] Which temperature channel(s) to plot initially? → Start with temperature01, expand as needed
+- [x] Which temperature channel(s) to plot initially? → All 24 channels
 - [x] Need downsampling for performance? → Try full resolution first, downsample if slow
 
 ## Notes

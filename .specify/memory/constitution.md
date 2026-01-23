@@ -2,11 +2,11 @@
 
 ## Research Context
 
-This project analyzes diffuse hydrothermal vent temperature variability using TMPSF (Temperature Mooring Sea Floor) sensor data. The primary goal is to understand how diffuse temperature varies as a function of time for the year 2018.
+This project analyzes diffuse hydrothermal vent temperature variability using TMPSF (Temperature Mooring Sea Floor) sensor data. The primary goal is to understand how diffuse temperature varies as a function of time for the years 2018-2019.
 
 Outputs:
-1. A concatenated pandas DataFrame containing the 2018 timeseries for exploration
-2. An interactive timeseries plot showing the daily average temperature for 2018
+1. A concatenated pandas DataFrame containing the 2018-2019 timeseries for exploration
+2. An interactive timeseries plot showing all 24 temperature channels for 2018-2019
 <!-- Who are the intended users of the outputs? -->
 
 ## Core Principles
