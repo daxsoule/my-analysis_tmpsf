@@ -47,6 +47,10 @@ TEMP_VARS = [f'temperature{i:02d}' for i in range(1, 25)]
 QARTOD_VARS = [f'{v}_qartod_results' for v in TEMP_VARS]
 QARTOD_PASS = 1
 
+# Cross-channel consistency threshold (°C above median to flag as suspect)
+# Single-channel spikes exceeding this threshold above the median of other channels are flagged
+CONSISTENCY_THRESHOLD = 10.0
+
 # Regex pattern to extract year from filename
 YEAR_PATTERN = re.compile(r'(\d{4})\d{4}T')
 
@@ -170,6 +174,82 @@ def report_qc_stats(qc_counts: dict) -> None:
         print('\n  Channels with >1% QC failures:')
         for ch, pct, n in sorted(high_fail, key=lambda x: -x[1]):
             print(f'    Channel {ch:02d}: {pct:5.1f}% failed ({n:,} values)')
+
+
+def apply_cross_channel_consistency(df: pd.DataFrame) -> tuple[pd.DataFrame, dict]:
+    """Apply cross-channel consistency check to flag single-channel spikes.
+
+    For each observation, compares each channel's value to the median of all
+    other channels. Values exceeding the median by more than CONSISTENCY_THRESHOLD
+    are set to NaN as likely sensor artifacts.
+
+    This catches sensor issues that passed QARTOD QC but show physically
+    implausible single-channel behavior.
+
+    Args:
+        df: DataFrame with temperature data (all 24 channels)
+
+    Returns:
+        Tuple of (filtered DataFrame, statistics dict with flagged counts per channel)
+    """
+    print(f'\nApplying cross-channel consistency check (threshold: {CONSISTENCY_THRESHOLD}C)...')
+
+    df_filtered = df.copy()
+    consistency_stats = {var: {'flagged': 0, 'total': 0} for var in TEMP_VARS}
+
+    # Get temperature data as array for efficient computation
+    temp_data = df_filtered[TEMP_VARS].values  # shape: (n_times, 24)
+    n_times, n_channels = temp_data.shape
+
+    # For each channel, compute median of OTHER channels and compare
+    flagged_mask = np.zeros_like(temp_data, dtype=bool)
+
+    for i, var in enumerate(TEMP_VARS):
+        # Get indices of other channels
+        other_indices = [j for j in range(n_channels) if j != i]
+
+        # Compute median of other channels for each timestamp
+        other_median = np.nanmedian(temp_data[:, other_indices], axis=1)
+
+        # Flag where this channel exceeds median + threshold
+        channel_values = temp_data[:, i]
+        exceeds_threshold = channel_values > (other_median + CONSISTENCY_THRESHOLD)
+
+        # Only flag non-NaN values
+        valid_mask = ~np.isnan(channel_values)
+        flagged = exceeds_threshold & valid_mask
+
+        flagged_mask[:, i] = flagged
+        consistency_stats[var]['flagged'] = int(flagged.sum())
+        consistency_stats[var]['total'] = int(valid_mask.sum())
+
+    # Apply mask - set flagged values to NaN
+    temp_data_filtered = temp_data.copy()
+    temp_data_filtered[flagged_mask] = np.nan
+    df_filtered[TEMP_VARS] = temp_data_filtered
+
+    # Report results
+    total_flagged = sum(s['flagged'] for s in consistency_stats.values())
+    total_obs = sum(s['total'] for s in consistency_stats.values())
+    pct_flagged = (total_flagged / total_obs * 100) if total_obs > 0 else 0
+
+    print(f'  Total values checked: {total_obs:,}')
+    print(f'  Flagged as inconsistent: {total_flagged:,} ({pct_flagged:.3f}%)')
+
+    # Report channels with flagged values
+    channels_flagged = []
+    for var, stats in consistency_stats.items():
+        if stats['flagged'] > 0:
+            channel = int(var.replace('temperature', ''))
+            pct = stats['flagged'] / stats['total'] * 100 if stats['total'] > 0 else 0
+            channels_flagged.append((channel, pct, stats['flagged']))
+
+    if channels_flagged:
+        print('\n  Channels with flagged values:')
+        for ch, pct, n in sorted(channels_flagged, key=lambda x: -x[2]):
+            print(f'    Channel {ch:02d}: {n:,} values ({pct:.2f}%)')
+
+    return df_filtered, consistency_stats
 
 
 def validate_data(df: pd.DataFrame) -> None:
@@ -464,11 +544,14 @@ def print_summary(df_daily: pd.DataFrame, df_stats: pd.DataFrame) -> None:
 
 def main():
     """Run the full analysis pipeline."""
-    # Load data with QC filtering
+    # Load data with QARTOD QC filtering
     df, qc_counts = load_data()
 
-    # Report QC statistics
+    # Report QARTOD QC statistics
     report_qc_stats(qc_counts)
+
+    # Apply cross-channel consistency check
+    df, consistency_stats = apply_cross_channel_consistency(df)
 
     # Validate
     validate_data(df)

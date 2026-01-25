@@ -78,11 +78,73 @@ belong in the paper.
 - **Format**: PNG at 300 DPI for publication
 - **Style**: Clean spines (top/right removed), consistent font sizes
 
-## Quality Checks
+## Quality Control
 
-- **Primary QC**: OOI QARTOD flags (1=pass, 2=not evaluated, 3=suspect, 4=fail, 9=missing)
-- **Handling**: Values with QARTOD != 1 are set to NaN before analysis
-- **Known issues**: Channel 06 sensor failure in 2017 (8.9% data failed QC), Channel 02 intermittent issues (2.9% failed)
+### Overview
+
+The TMPSF sensor data contains artifacts from sensor failures that must be identified and removed before analysis. We apply a two-stage QC process:
+
+1. **QARTOD filtering**: Use OOI's built-in quality flags
+2. **Cross-channel consistency check**: Flag single-channel spikes that passed QARTOD
+
+### Stage 1: QARTOD Filtering
+
+OOI provides QARTOD (Quality Assurance of Real-Time Oceanographic Data) flags for each temperature channel:
+- 1 = Pass
+- 2 = Not evaluated
+- 3 = Suspect
+- 4 = Fail
+- 9 = Missing
+
+**Implementation**: Values with QARTOD != 1 are set to NaN before analysis.
+
+**Results**:
+- Total observations: 815,810,256
+- Failed QARTOD: 3,989,716 (0.49%)
+- Channel 06: 8.9% failed (sensor failure throughout 2017)
+- Channel 02: 2.9% failed (intermittent issues)
+
+### Stage 2: Cross-Channel Consistency Check
+
+Some sensor artifacts passed QARTOD QC but showed physically implausible behavior. We identified these by examining single-channel temperature spikes.
+
+**Problem identified**: Channel 02 showed temperatures of 20-50°C while all neighboring channels (01, 03, 04) showed normal temps of ~3°C. This single-channel spike pattern is characteristic of sensor malfunction, not real hydrothermal events (which would affect multiple nearby thermistors).
+
+**Evidence**:
+- Channel 02 mean temperature in 2015: 16.6°C (other channels: ~3°C)
+- Channel 02 max in 2017: 49.2°C (neighbors showed 3-4°C)
+- Pattern: isolated single-channel spikes, not correlated with neighbors
+
+**Solution**: Cross-channel consistency filter that flags values exceeding the median of all other channels by more than 10°C.
+
+**Implementation**:
+```
+For each timestamp and channel:
+  median_others = median of all other 23 channels
+  if channel_value > median_others + 10°C:
+    set to NaN (flagged as inconsistent)
+```
+
+**Results**:
+- Total flagged: 5,547 values (0.25% of QARTOD-passed data)
+- Channel 02: 4,168 values flagged (4.54%)
+- Channel 07: 1,276 values flagged (1.37%)
+- Channel 06: 99 values flagged (0.11%)
+
+### Final Data Quality
+
+After both QC stages:
+- Temperature range: 2.3°C to 13.4°C (physically reasonable for diffuse vents)
+- Mean: 3.02°C
+- Std deviation: 0.95°C
+
+### Known Sensor Issues
+
+| Channel | Issue | Period | Detection Method |
+|---------|-------|--------|------------------|
+| 06 | Complete sensor failure | 2017 | QARTOD flagged as FAIL |
+| 02 | Intermittent high readings | 2015-2017 | Cross-channel consistency |
+| 07 | Some high spikes | Various | Cross-channel consistency |
 
 ## Outputs
 
