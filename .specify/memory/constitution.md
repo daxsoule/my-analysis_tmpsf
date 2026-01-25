@@ -81,6 +81,46 @@ belong in the paper.
 - **Primary QC**: Use OOI QARTOD and QC flags included in data files
 - **Handling**: Filter or flag data based on QC results before plotting
 
+## Outputs
+
+### Data Products
+
+| File | Description |
+|------|-------------|
+| `outputs/data/tmpsf_2018-2019_raw.parquet` | High-frequency cleaned data |
+| `outputs/data/tmpsf_2018-2019_daily.parquet` | Daily averaged temperatures |
+
+**Columns:** `temperature01` through `temperature24` (24 thermistor channels)
+
+### Figures
+
+| File | Description |
+|------|-------------|
+| `outputs/figures/tmpsf_2018-2019_all_channels.html` | Interactive timeseries plot |
+
+### Notebooks
+
+| File | Description |
+|------|-------------|
+| `outputs/notebooks/01_explore_tmpsf.ipynb` | Exploratory analysis notebook |
+| `outputs/notebooks/environment.yml` | Conda environment for notebook |
+
+## Project Structure
+
+```
+my-analysis_tmpsf/
+├── analysis.py                     # Main analysis script
+├── requirements.txt                # Python dependencies
+├── outputs/
+│   ├── constitution.pdf            # PDF reference document
+│   ├── data/                       # Parquet data products
+│   ├── figures/                    # Interactive HTML plots
+│   └── notebooks/                  # Reproducible Jupyter notebook
+└── .specify/
+    ├── features/                   # Spec, plan, tasks
+    └── memory/constitution.md      # Project constitution
+```
+
 ## Project Notes
 
 - **Status**: Exploratory analysis, no constraints
