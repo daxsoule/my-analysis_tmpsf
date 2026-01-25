@@ -404,7 +404,7 @@ def plot_all_channels(df_daily: pd.DataFrame, df_stats: pd.DataFrame) -> None:
     print('\nGenerating full timeseries plot...')
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
-    fig, ax = plt.subplots(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(6, 3))
 
     # Create colormap based on mean temperature
     temp_means = df_stats.set_index('variable')['mean']
@@ -424,9 +424,10 @@ def plot_all_channels(df_daily: pd.DataFrame, df_stats: pd.DataFrame) -> None:
     ax.set_ylabel('Temperature (C)')
     ax.set_title(f'ASHES Vent Field - All 24 Temperature Channels ({get_date_range_str()})')
 
-    # Clean up spines
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
+    # Full border around plot
+    for spine in ax.spines.values():
+        spine.set_visible(True)
+        spine.set_linewidth(0.8)
 
     ax.grid(True, alpha=0.3)
 
@@ -442,7 +443,7 @@ def plot_channel_stats(df_stats: pd.DataFrame) -> None:
     print('Generating channel characterization plot...')
     FIGURES_DIR.mkdir(parents=True, exist_ok=True)
 
-    fig, ax = plt.subplots(figsize=(8, 4))
+    fig, ax = plt.subplots(figsize=(6, 3))
 
     # Sort by mean temperature for the plot
     df_sorted = df_stats.sort_values('mean')
@@ -459,9 +460,10 @@ def plot_channel_stats(df_stats: pd.DataFrame) -> None:
     ax.set_ylabel('Mean Temperature (C)')
     ax.set_title('Channel Mean Temperatures (ranked coolest to hottest)')
 
-    # Clean up spines
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
+    # Full border around plot
+    for spine in ax.spines.values():
+        spine.set_visible(True)
+        spine.set_linewidth(0.8)
 
     # Add legend
     from matplotlib.patches import Patch
@@ -488,7 +490,7 @@ def plot_hot_vs_cool(df_daily: pd.DataFrame, df_stats: pd.DataFrame) -> None:
     coolest_3 = df_sorted.head(3)['variable'].tolist()
     hottest_3 = df_sorted.tail(3)['variable'].tolist()
 
-    fig, ax = plt.subplots(figsize=(8, 4))
+    fig, ax = plt.subplots(figsize=(6, 3))
 
     # Plot cool channels in blue shades
     cool_colors = ['#4393c3', '#2166ac', '#053061']
@@ -508,9 +510,10 @@ def plot_hot_vs_cool(df_daily: pd.DataFrame, df_stats: pd.DataFrame) -> None:
     ax.set_ylabel('Temperature (C)')
     ax.set_title(f'Hot vs Cool Channels Comparison ({get_date_range_str()})')
 
-    # Clean up spines
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
+    # Full border around plot
+    for spine in ax.spines.values():
+        spine.set_visible(True)
+        spine.set_linewidth(0.8)
 
     ax.legend(loc='upper right', fontsize=8, ncol=2)
     ax.grid(True, alpha=0.3)
