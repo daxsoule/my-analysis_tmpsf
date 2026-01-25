@@ -2,11 +2,12 @@
 
 ## Research Context
 
-This project analyzes diffuse hydrothermal vent temperature variability using TMPSF (Temperature Mooring Sea Floor) sensor data. The primary goal is to understand how diffuse temperature varies as a function of time for the years 2018-2019.
+This project analyzes diffuse hydrothermal vent temperature variability using TMPSF (Temperature Mooring Sea Floor) sensor data. The primary goal is to understand how diffuse temperature varies as a function of time for 2015-2026, capturing the April 2015 eruption through present.
 
 Outputs:
-1. A concatenated pandas DataFrame containing the 2018-2019 timeseries for exploration
-2. An interactive timeseries plot showing all 24 temperature channels for 2018-2019
+1. A concatenated pandas DataFrame containing the 2015-2026 timeseries for exploration
+2. Channel characterization with per-channel statistics (mean, std, min, max, CV)
+3. Publication-quality matplotlib figures (300 DPI) showing temperature timeseries and channel comparisons
 <!-- Who are the intended users of the outputs? -->
 
 ## Core Principles
@@ -71,10 +72,11 @@ belong in the paper.
 
 ## Figure Standards
 
-- **Purpose**: Exploratory analysis
-- **Plotting library**: hvplot (interactive)
-- **Color palette**: Default (colorblind-safe preferred for publication)
-- **Format**: Interactive HTML/notebook widgets
+- **Purpose**: Publication-quality analysis
+- **Plotting library**: matplotlib (static, 300 DPI)
+- **Color palette**: coolwarm for temperature gradients, diverging blue/red for hot/cool channels
+- **Format**: PNG at 300 DPI for publication
+- **Style**: Clean spines (top/right removed), consistent font sizes
 
 ## Quality Checks
 
@@ -87,8 +89,9 @@ belong in the paper.
 
 | File | Description |
 |------|-------------|
-| `outputs/data/tmpsf_2018-2019_raw.parquet` | High-frequency cleaned data |
-| `outputs/data/tmpsf_2018-2019_daily.parquet` | Daily averaged temperatures |
+| `outputs/data/tmpsf_2015-2026_hourly.parquet` | Hourly averaged data (memory-efficient) |
+| `outputs/data/tmpsf_2015-2026_daily.parquet` | Daily averaged temperatures |
+| `outputs/data/channel_statistics.csv` | Per-channel statistics and characterization |
 
 **Columns:** `temperature01` through `temperature24` (24 thermistor channels)
 
@@ -96,7 +99,9 @@ belong in the paper.
 
 | File | Description |
 |------|-------------|
-| `outputs/figures/tmpsf_2018-2019_all_channels.html` | Interactive timeseries plot |
+| `outputs/figures/tmpsf_all_channels.png` | Full 11-year timeseries, color-coded by mean temp |
+| `outputs/figures/channel_characterization.png` | Bar chart of mean temps with error bars |
+| `outputs/figures/hot_vs_cool_channels.png` | Top/bottom 3 channel comparison |
 
 ### Notebooks
 
