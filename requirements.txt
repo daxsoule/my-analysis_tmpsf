@@ -1,0 +1,7 @@
+xarray>=2024.0
+netcdf4>=1.6
+pandas>=2.0
+numpy>=1.26
+hvplot>=0.9
+matplotlib>=3.8
+pyarrow>=14.0
