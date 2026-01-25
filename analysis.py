@@ -43,6 +43,10 @@ TIME_END = '2026-01-25'
 # Temperature channels
 TEMP_VARS = [f'temperature{i:02d}' for i in range(1, 25)]
 
+# QARTOD QC variables (1=pass, 2=not evaluated, 3=suspect, 4=fail, 9=missing)
+QARTOD_VARS = [f'{v}_qartod_results' for v in TEMP_VARS]
+QARTOD_PASS = 1
+
 # Regex pattern to extract year from filename
 YEAR_PATTERN = re.compile(r'(\d{4})\d{4}T')
 
@@ -60,14 +64,14 @@ def extract_years_from_filename(filename: str) -> set:
     return set(int(y) for y in matches)
 
 
-def load_data() -> pd.DataFrame:
+def load_data() -> tuple[pd.DataFrame, dict]:
     """Load NetCDF files containing data within the time range.
 
-    Uses regex-based year extraction for file filtering and hourly resampling
-    for memory-efficient loading of multi-year data.
+    Uses regex-based year extraction for file filtering, QARTOD QC filtering,
+    and hourly resampling for memory-efficient loading of multi-year data.
 
     Returns:
-        DataFrame with all 24 temperature channels, indexed by time
+        Tuple of (DataFrame with QC-filtered temperature data, QC statistics dict)
     """
     print('=' * 60)
     print('ASHES TMPSF Temperature Analysis')
@@ -92,6 +96,8 @@ def load_data() -> pd.DataFrame:
     print(f'Found {len(files)} files containing {start_year}-{end_year} data')
 
     dfs = []
+    qc_counts = {var: {'total': 0, 'passed': 0, 'failed': 0} for var in TEMP_VARS}
+
     for i, f in enumerate(files):
         if i % 10 == 0:
             print(f'  Loading file {i+1}/{len(files)}...')
@@ -99,12 +105,34 @@ def load_data() -> pd.DataFrame:
         ds = xr.open_dataset(f)
         ds = ds.swap_dims({'obs': 'time'})
 
+        # Get available temperature and QC variables
         available_temp = [v for v in TEMP_VARS if v in ds.data_vars]
-        ds_filt = ds[available_temp].sel(time=slice(TIME_START, TIME_END))
+        available_qc = [v for v in QARTOD_VARS if v in ds.data_vars]
+
+        # Load both temp and QC data
+        vars_to_load = available_temp + available_qc
+        ds_filt = ds[vars_to_load].sel(time=slice(TIME_START, TIME_END))
 
         if ds_filt.sizes['time'] > 0:
-            # Resample to hourly for memory efficiency before concatenation
             df_chunk = ds_filt.to_dataframe()
+
+            # Apply QARTOD filtering: mask values where QC != 1 (pass)
+            for temp_var in available_temp:
+                qc_var = f'{temp_var}_qartod_results'
+                if qc_var in df_chunk.columns:
+                    n_total = df_chunk[temp_var].notna().sum()
+                    qc_mask = df_chunk[qc_var] != QARTOD_PASS
+                    n_failed = qc_mask.sum()
+
+                    # Set failed QC values to NaN
+                    df_chunk.loc[qc_mask, temp_var] = np.nan
+
+                    qc_counts[temp_var]['total'] += n_total
+                    qc_counts[temp_var]['failed'] += n_failed
+                    qc_counts[temp_var]['passed'] += (n_total - n_failed)
+
+            # Keep only temperature columns and resample to hourly
+            df_chunk = df_chunk[available_temp]
             df_hourly = df_chunk.resample('h').mean()
             dfs.append(df_hourly)
         ds.close()
@@ -114,7 +142,34 @@ def load_data() -> pd.DataFrame:
     df = df[~df.index.duplicated(keep='first')]
 
     print(f'Loaded {len(df):,} hourly observations')
-    return df
+    return df, qc_counts
+
+
+def report_qc_stats(qc_counts: dict) -> None:
+    """Report QC filtering statistics."""
+    print('\nQARTOD QC filtering results:')
+    print('  (1=pass, 4=fail - failed values set to NaN)')
+
+    total_all = sum(c['total'] for c in qc_counts.values())
+    failed_all = sum(c['failed'] for c in qc_counts.values())
+    pct_failed = (failed_all / total_all * 100) if total_all > 0 else 0
+
+    print(f'  Total observations: {total_all:,}')
+    print(f'  Failed QC: {failed_all:,} ({pct_failed:.2f}%)')
+
+    # Report channels with high failure rates
+    high_fail = []
+    for var, counts in qc_counts.items():
+        if counts['total'] > 0:
+            fail_pct = counts['failed'] / counts['total'] * 100
+            if fail_pct > 1.0:  # More than 1% failed
+                channel = int(var.replace('temperature', ''))
+                high_fail.append((channel, fail_pct, counts['failed']))
+
+    if high_fail:
+        print('\n  Channels with >1% QC failures:')
+        for ch, pct, n in sorted(high_fail, key=lambda x: -x[1]):
+            print(f'    Channel {ch:02d}: {pct:5.1f}% failed ({n:,} values)')
 
 
 def validate_data(df: pd.DataFrame) -> None:
@@ -409,8 +464,11 @@ def print_summary(df_daily: pd.DataFrame, df_stats: pd.DataFrame) -> None:
 
 def main():
     """Run the full analysis pipeline."""
-    # Load data
-    df = load_data()
+    # Load data with QC filtering
+    df, qc_counts = load_data()
+
+    # Report QC statistics
+    report_qc_stats(qc_counts)
 
     # Validate
     validate_data(df)

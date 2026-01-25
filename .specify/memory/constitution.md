@@ -80,8 +80,9 @@ belong in the paper.
 
 ## Quality Checks
 
-- **Primary QC**: Use OOI QARTOD and QC flags included in data files
-- **Handling**: Filter or flag data based on QC results before plotting
+- **Primary QC**: OOI QARTOD flags (1=pass, 2=not evaluated, 3=suspect, 4=fail, 9=missing)
+- **Handling**: Values with QARTOD != 1 are set to NaN before analysis
+- **Known issues**: Channel 06 sensor failure in 2017 (8.9% data failed QC), Channel 02 intermittent issues (2.9% failed)
 
 ## Outputs
 
