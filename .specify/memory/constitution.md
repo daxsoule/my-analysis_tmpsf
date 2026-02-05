@@ -8,7 +8,36 @@ Outputs:
 1. A concatenated pandas DataFrame containing the 2015-2026 timeseries for exploration
 2. Channel characterization with per-channel statistics (mean, std, min, max, CV)
 3. Publication-quality matplotlib figures (300 DPI) showing temperature timeseries and channel comparisons
-<!-- Who are the intended users of the outputs? -->
+
+**Related projects:**
+- `../my-analysis_botpt/` - Differential uplift analysis from BPR data
+- `../miso_my-analysis/` - MISO hydrothermal vent temperatures (focused flow)
+- `../earthquakes_my-analysis/` - Seismicity patterns
+
+**Vent field coordinates (from miso_my-analysis):**
+
+| Vent Field | Lat (°N) | Lon (°W) | Depth (m) |
+|------------|----------|----------|-----------|
+| ASHES | 45.9336 | -130.0137 | 1540 |
+| CASM | 45.9889 | -130.0272 | 1580 |
+| Coquille | 45.9174 | -129.9930 | 1538 |
+| International District | 45.9263 | -129.9790 | 1522 |
+| Trevi | 45.9463 | -129.9838 | 1520 |
+
+**Individual vent coordinates (canonical reference):**
+
+| Vent | Vent Field | Longitude | Latitude | 2024 Logger |
+|------|------------|-----------|----------|-------------|
+| Inferno | ASHES | -130.013674 | 45.933566 | MISO 2023-005 |
+| Hell | ASHES | -130.013943 | 45.933307 | MISO 2023-002 |
+| Virgin | ASHES | -130.013237 | 45.933624 | MISO 2023-007 |
+| Phoenix | ASHES | -130.0136515 | 45.93327021 | |
+| Vixen/Mkr218 | Coquille | -129.99295 | 45.91733 | MISO 2023-012 |
+| El Guapo | International District | -129.979493 | 45.926486 | MISO 2023-009 |
+| Tiny Tower | International District | -129.979186 | 45.926314 | MISO 2017-002 |
+| Trevi/Mkr156 | Trevi | -129.983713 | 45.946276 | MISO 2023-010 |
+| T&S or Shepherd | CASM | -130.027294 | 45.989202 | |
+| Castle-Mkr278 | International District | -129.979996 | 45.926218 | MISO 103 |
 
 ## Core Principles
 
