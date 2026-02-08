@@ -58,6 +58,20 @@ Follow this execution flow:
 
    **Figure Standards**: Ask about target venue (journal, presentation) to inform format/resolution. Suggest colorblind-safe palettes if not specified.
 
+   **Figure Evaluation Rubrics**: After Figure Standards, ask the user which shared rubrics to adopt. The repo provides standardized rubrics at `specs/rubrics/` in the repo root:
+   - `map-evaluation-rubric.md` — 14 criteria for cartographic figures (coordinate reference, scale bar, projection info, data provenance, etc.)
+   - `timeseries-evaluation-rubric.md` — 19 criteria for time series figures (axis labels, event annotations, data gaps, temporal aggregation, etc.)
+
+   For each adopted rubric:
+   1. Ask which **sizing tier** applies (Poster, Paper, or Presentation) — this determines font sizes and DPI minimums.
+   2. Record the adoption and tier in the constitution under a `## Figure Evaluation` section.
+   3. Create empty project-local scorecard files in the project's `specs/` directory:
+      - `specs/map-scorecard.md` (if map rubric adopted)
+      - `specs/timeseries-scorecard.md` (if time series rubric adopted)
+      Copy the scorecard template from the shared rubric into each file, with the project name and sizing tier pre-filled.
+
+   If the project will not produce maps or time series, skip the corresponding rubric.
+
    **Quality Checks**: Ask what validations would catch errors in their specific data type.
 
    **Project Notes**: Probe for constraints that might not be obvious - data embargoes, collaborator agreements, deadlines.
