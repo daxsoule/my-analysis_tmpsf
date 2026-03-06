@@ -145,9 +145,9 @@
 - [x] T045 Verify `analysis.py` runs end-to-end from raw NetCDF to all outputs
 - [x] T046 Add `requirements.txt` with Python dependencies
 - [x] T047 Add `outputs/notebooks/environment.yml` for conda environment
-- [ ] T048 Add CLAUDE.md with security guardrails (matching miso_my-analysis)
-- [ ] T049 Update tasks.md to reflect all completed work
-- [ ] T050 Final review: verify all outputs listed in constitution exist in outputs/
+- [x] T048 Add CLAUDE.md with security guardrails (matching miso_my-analysis)
+- [x] T049 Update tasks.md to reflect all completed work
+- [x] T050 Final review: verify all outputs listed in constitution exist in outputs/
 
 **Checkpoint**: Repository reproducible and shareable
 

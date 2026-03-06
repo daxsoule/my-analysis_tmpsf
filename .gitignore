@@ -46,7 +46,12 @@ data/interim/
 
 # Output directories
 output/
-outputs/
+outputs/*
+!outputs/notebooks/
+outputs/notebooks/*
+!outputs/notebooks/01_explore_tmpsf.ipynb
+!outputs/notebooks/README.md
+!outputs/notebooks/environment.yml
 results/
 figures/
 plots/

@@ -1,0 +1,17 @@
+name: ashes-tmpsf-analysis
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - pandas>=2.0
+  - xarray>=2024.0
+  - netcdf4>=1.6
+  - numpy>=1.26
+  - hvplot>=0.9
+  - holoviews>=1.18
+  - bokeh>=3.3
+  - pyarrow>=14.0
+  - jupyter>=1.0
+  - jupyterlab>=4.0
+  - pip
